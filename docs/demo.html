@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Sentinel: AI-Enhanced Bettercap Blueprint</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Chosen Palette: Clinical Lab (Warm Neutrals & Professional Blues) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Sets the context of the project proposal.
+         2. Architecture Flow: An interactive block diagram (HTML/CSS) explaining the data pipeline from Bettercap to AI. This maps the 'How it works' mental model.
+         3. Simulation Dashboard: The 'Wow' factor. A functioning prototype of the UI described in the report, allowing users to 'simulate' attacks and see the AI response.
+         4. Feature Specifications: Detailed breakdown of requirements (Storage, Custom Output, Testing) in an explorable grid.
+         5. Roadmap & Licensing: Summary of the non-technical project requirements.
+    -->
+    <style>
+        /* Chart Container Styling - Mandatory per instructions */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Limits width on large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom scrollbar for log window */
+        .log-window::-webkit-scrollbar {
+            width: 8px;
+        }
+        .log-window::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        .log-window::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .log-window::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .pulse-alert {
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans leading-relaxed">
+
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🛡️</span>
+                <h1 class="text-xl font-bold text-slate-800">Project Sentinel <span class="text-slate-400 font-normal">| AI-Bettercap Integration</span></h1>
+            </div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
+                <a href="#architecture" class="hover:text-blue-600 transition">Architecture</a>
+                <a href="#dashboard" class="hover:text-blue-600 transition">Live Prototype</a>
+                <a href="#specs" class="hover:text-blue-600 transition">Specs</a>
+            </div>
+            <button onclick="document.getElementById('dashboard').scrollIntoView({behavior: 'smooth'})" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-semibold transition shadow-sm">
+                View Prototype
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="container mx-auto px-4 py-12 md:py-20 text-center max-w-4xl">
+        <span class="inline-block px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full mb-4 tracking-wide uppercase">Project Proposal & Template</span>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">Next-Gen Network Traffic Analysis</h2>
+        <p class="text-lg text-slate-600 mb-8 max-w-2xl mx-auto">
+            A blueprint for a robust, open-source solution integrating <strong>Bettercap</strong> with <strong>Artificial Intelligence</strong>. 
+            This project aims to automate anomaly detection, classify threats in real-time, and execute defensive responses.
+        </p>
+        <div class="flex justify-center gap-4">
+            <div class="flex flex-col items-center">
+                <span class="text-2xl font-bold text-slate-800">Real-time</span>
+                <span class="text-sm text-slate-500">Packet Sniffing</span>
+            </div>
+            <div class="w-px h-12 bg-slate-300 mx-4"></div>
+            <div class="flex flex-col items-center">
+                <span class="text-2xl font-bold text-slate-800">ML-Driven</span>
+                <span class="text-sm text-slate-500">Anomaly Detection</span>
+            </div>
+            <div class="w-px h-12 bg-slate-300 mx-4"></div>
+            <div class="flex flex-col items-center">
+                <span class="text-2xl font-bold text-slate-800">Automated</span>
+                <span class="text-sm text-slate-500">Threat Response</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section: System Architecture (Interactive) -->
+    <!-- Visualization Choice: HTML Block Diagram. Users click blocks to understand the data flow described in the report. -->
+    <section id="architecture" class="bg-white py-16 border-y border-slate-200">
+        <div class="container mx-auto px-4">
+            <div class="mb-10 text-center">
+                <h3 class="text-2xl font-bold text-slate-800 mb-2">System Architecture</h3>
+                <p class="text-slate-600 max-w-2xl mx-auto">
+                    Explore the data pipeline designed to transform raw Bettercap packet captures into actionable AI insights. Click on any stage below to reveal technical details.
+                </p>
+            </div>
+
+            <!-- Interactive Flow Chart -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-6xl mx-auto relative mb-8">
+                <!-- Step 1 -->
+                <button onclick="updateArchDetails('capture')" class="group relative bg-slate-50 border-2 border-slate-200 hover:border-blue-500 hover:bg-blue-50 p-6 rounded-xl text-left transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 h-full flex flex-col justify-between">
+                    <div>
+                        <div class="text-blue-600 mb-2 text-2xl">📡</div>
+                        <h4 class="font-bold text-slate-800 mb-1 group-hover:text-blue-700">1. Data Capture</h4>
+                        <p class="text-xs text-slate-500">Bettercap Interface</p>
+                    </div>
+                    <div class="absolute -bottom-4 md:bottom-auto md:-right-4 left-1/2 md:left-auto transform -translate-x-1/2 md:translate-x-0 z-10">
+                        <span class="text-slate-300 text-xl hidden md:block">➔</span>
+                        <span class="text-slate-300 text-xl md:hidden">⬇</span>
+                    </div>
+                </button>
+
+                <!-- Step 2 -->
+                <button onclick="updateArchDetails('process')" class="group relative bg-slate-50 border-2 border-slate-200 hover:border-indigo-500 hover:bg-indigo-50 p-6 rounded-xl text-left transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 h-full flex flex-col justify-between">
+                    <div>
+                        <div class="text-indigo-600 mb-2 text-2xl">⚙️</div>
+                        <h4 class="font-bold text-slate-800 mb-1 group-hover:text-indigo-700">2. Processing</h4>
+                        <p class="text-xs text-slate-500">Parsing & Storage</p>
+                    </div>
+                    <div class="absolute -bottom-4 md:bottom-auto md:-right-4 left-1/2 md:left-auto transform -translate-x-1/2 md:translate-x-0 z-10">
+                        <span class="text-slate-300 text-xl hidden md:block">➔</span>
+                        <span class="text-slate-300 text-xl md:hidden">⬇</span>
+                    </div>
+                </button>
+
+                <!-- Step 3 -->
+                <button onclick="updateArchDetails('ai')" class="group relative bg-slate-50 border-2 border-slate-200 hover:border-purple-500 hover:bg-purple-50 p-6 rounded-xl text-left transition focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 h-full flex flex-col justify-between">
+                    <div>
+                        <div class="text-purple-600 mb-2 text-2xl">🧠</div>
+                        <h4 class="font-bold text-slate-800 mb-1 group-hover:text-purple-700">3. AI Analysis</h4>
+                        <p class="text-xs text-slate-500">Detection Models</p>
+                    </div>
+                    <div class="absolute -bottom-4 md:bottom-auto md:-right-4 left-1/2 md:left-auto transform -translate-x-1/2 md:translate-x-0 z-10">
+                        <span class="text-slate-300 text-xl hidden md:block">➔</span>
+                        <span class="text-slate-300 text-xl md:hidden">⬇</span>
+                    </div>
+                </button>
+
+                <!-- Step 4 -->
+                <button onclick="updateArchDetails('action')" class="group relative bg-slate-50 border-2 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 p-6 rounded-xl text-left transition focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 h-full flex flex-col justify-between">
+                    <div>
+                        <div class="text-emerald-600 mb-2 text-2xl">🛡️</div>
+                        <h4 class="font-bold text-slate-800 mb-1 group-hover:text-emerald-700">4. Response</h4>
+                        <p class="text-xs text-slate-500">Action & Visualization</p>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Dynamic Detail Panel -->
+            <div id="arch-detail-panel" class="bg-slate-50 rounded-lg p-6 border border-slate-200 shadow-inner max-w-6xl mx-auto fade-in">
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="md:w-1/3 border-r border-slate-200 pr-6">
+                        <h5 class="text-lg font-bold text-blue-800 mb-2" id="detail-title">Select a Module</h5>
+                        <p class="text-sm text-slate-600" id="detail-desc">Click on the pipeline stages above to see the specific implementation requirements extracted from the project report.</p>
+                    </div>
+                    <div class="md:w-2/3">
+                        <h6 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Key Requirements</h6>
+                        <ul class="space-y-2" id="detail-list">
+                            <li class="flex items-start text-sm text-slate-700"><span class="mr-2 text-blue-500">•</span> Interact with the diagram above to explore.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Prototype Dashboard (The 'Wow' Factor) -->
+    <!-- Visualization Choice: Real-time updated charts and logs simulating the proposed tool's UI. This demonstrates the "Real-time visualizations" and "User-friendly web interface" requirements. -->
+    <section id="dashboard" class="py-16 bg-slate-100">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold text-slate-800">Live Traffic Prototype</h3>
+                    <p class="text-slate-600 max-w-xl mt-2">
+                        This interface simulates the proposed end-user experience. It visualizes data captured by Bettercap and processed by the AI models.
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 bg-white p-2 rounded-lg shadow-sm border border-slate-200 flex items-center gap-3">
+                    <div class="flex items-center gap-2 px-2">
+                        <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                        <span class="text-xs font-bold text-slate-700">System Active</span>
+                    </div>
+                    <button onclick="simulateAttack()" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded text-sm font-semibold transition flex items-center gap-2">
+                        <span>⚡</span> Simulate Attack
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Chart 1: Traffic Volume -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-bold text-slate-700">Real-time Traffic Flow (Packet/s)</h4>
+                        <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">TCP/IP Layer</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="trafficChart"></canvas>
+                    </div>
+                    <div class="mt-4 flex gap-4 text-xs text-slate-500 justify-center">
+                        <div class="flex items-center gap-1"><div class="w-2 h-2 bg-blue-500 rounded-full"></div> Normal Traffic</div>
+                        <div class="flex items-center gap-1"><div class="w-2 h-2 bg-red-500 rounded-full"></div> Anomaly Threshold</div>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Threat Classification -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col">
+                    <h4 class="font-bold text-slate-700 mb-4">AI Classification Model</h4>
+                    <div class="chart-container flex-grow flex items-center justify-center">
+                        <canvas id="threatChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <p class="text-xs text-slate-500 mb-1">Dominant Pattern</p>
+                        <p class="text-xl font-bold text-blue-600" id="dominant-pattern">Normal Traffic</p>
+                    </div>
+                </div>
+
+                <!-- Log Panel: Automated Actions -->
+                <div class="lg:col-span-3 bg-slate-900 rounded-xl shadow-md overflow-hidden flex flex-col h-64 border border-slate-700">
+                    <div class="bg-slate-800 px-6 py-3 border-b border-slate-700 flex justify-between items-center">
+                        <h4 class="font-mono text-sm font-bold text-slate-100">Bettercap Event Log & Automated Actions</h4>
+                        <div class="flex gap-2">
+                            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                            <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        </div>
+                    </div>
+                    <div class="p-4 font-mono text-xs overflow-y-auto log-window flex-grow" id="console-log">
+                        <!-- Logs injected by JS -->
+                        <div class="text-slate-400 mb-1"><span class="text-blue-400">[INFO]</span> Bettercap session started. Interface: eth0</div>
+                        <div class="text-slate-400 mb-1"><span class="text-blue-400">[INFO]</span> AI Model loaded: "net_anomaly_v1.2"</div>
+                        <div class="text-slate-400 mb-1"><span class="text-blue-400">[INFO]</span> Listening for HTTP/TCP/DNS traffic...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Feature Specifications (Grid) -->
+    <section id="specs" class="py-16 bg-white border-t border-slate-200">
+        <div class="container mx-auto px-4">
+            <div class="mb-10">
+                <h3 class="text-2xl font-bold text-slate-800">Technical Specifications</h3>
+                <p class="text-slate-600">Detailed breakdown of the project requirements from the source report.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="p-6 border border-slate-200 rounded-lg hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mb-4 text-xl">💾</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Custom Output & Storage</h4>
+                    <p class="text-sm text-slate-600 mb-4">
+                        System must move beyond standard logs. Requires structured database storage (SQLite/MySQL) for historical analysis.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-1 list-disc pl-4">
+                        <li>JSON/CSV export formats</li>
+                        <li>SQL Schema for attack logs</li>
+                        <li>Filtering (IP, DNS, Protocol)</li>
+                    </ul>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="p-6 border border-slate-200 rounded-lg hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mb-4 text-xl">🤖</div>
+                    <h4 class="font-bold text-slate-800 mb-2">AI Capabilities</h4>
+                    <p class="text-sm text-slate-600 mb-4">
+                        Pre-trained models required to distinguish "Normal" vs "Malicious" behavior patterns.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Anomaly Detection (Spikes)</li>
+                        <li>Specific Classification (DDoS, ARP)</li>
+                        <li>Traffic Profiling</li>
+                    </ul>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="p-6 border border-slate-200 rounded-lg hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-lg flex items-center justify-center mb-4 text-xl">⚡</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Automated Response</h4>
+                    <p class="text-sm text-slate-600 mb-4">
+                        The system must act, not just observe. Trigger hooks based on AI confidence scores.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Block Suspicious IPs</li>
+                        <li>Drop Malicious Connections</li>
+                        <li>High-priority User Alerts</li>
+                    </ul>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="p-6 border border-slate-200 rounded-lg hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center mb-4 text-xl">🧪</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Testing & Debugging</h4>
+                    <p class="text-sm text-slate-600 mb-4">
+                        Robustness is key. The project must include comprehensive test suites.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Unit tests for Traffic Capture</li>
+                        <li>Accuracy tests for AI Models</li>
+                        <li>Verbose Logging modes</li>
+                    </ul>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="p-6 border border-slate-200 rounded-lg hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-teal-100 text-teal-600 rounded-lg flex items-center justify-center mb-4 text-xl">📚</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Documentation</h4>
+                    <p class="text-sm text-slate-600 mb-4">
+                        Clear instructions for setup and extensibility are mandatory.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Installation Guides</li>
+                        <li>Model Training Tutorials</li>
+                        <li>Configuration Examples</li>
+                    </ul>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="p-6 border border-slate-200 rounded-lg hover:shadow-md transition">
+                    <div class="w-10 h-10 bg-pink-100 text-pink-600 rounded-lg flex items-center justify-center mb-4 text-xl">☁️</div>
+                    <h4 class="font-bold text-slate-800 mb-2">Bonus Features</h4>
+                    <p class="text-sm text-slate-600 mb-4">
+                        Optional enhancements to increase project value.
+                    </p>
+                    <ul class="text-xs text-slate-500 space-y-1 list-disc pl-4">
+                        <li>Cloud Platform Integration</li>
+                        <li>Multi-platform (Win/Mac/Linux)</li>
+                        <li>Specific Attack Detectors (MITM)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / License Info -->
+    <footer class="bg-slate-50 border-t border-slate-200 py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h4 class="font-bold text-slate-800 mb-4">Project Licensing Strategy</h4>
+            <div class="inline-flex gap-4 mb-8">
+                <span class="px-4 py-2 bg-white border border-slate-200 rounded text-sm text-slate-600">MIT License</span>
+                <span class="text-slate-400 self-center">OR</span>
+                <span class="px-4 py-2 bg-white border border-slate-200 rounded text-sm text-slate-600">GPL License</span>
+            </div>
+            <p class="text-slate-500 text-sm max-w-lg mx-auto">
+                "This project should serve as a robust, customizable solution for network traffic analysis, allowing users to incorporate AI-driven features."
+            </p>
+            <div class="mt-8 text-xs text-slate-400">
+                Generated based on User Project Requirements
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Architecture Interaction Logic ---
+        const archData = {
+            'capture': {
+                title: '1. Data Capture (Bettercap)',
+                desc: 'The foundation of the system. Bettercap is configured to sniff network interfaces in real-time.',
+                items: [
+                    'Packet Sniffing (TCP/IP Layers)',
+                    'HTTP Request Interception',
+                    'DNS Query Monitoring',
+                    'MITM Attack Simulation Capabilities'
+                ]
+            },
+            'process': {
+                title: '2. Processing & Storage',
+                desc: 'Raw data is parsed into structured formats and stored for historical analysis and model training.',
+                items: [
+                    'Parsing raw packet bytes to JSON/CSV',
+                    'Storage in SQLite or MySQL databases',
+                    'Filtering noise (whitelisting IPs)',
+                    'Feature extraction for AI (packet size, frequency)'
+                ]
+            },
+            'ai': {
+                title: '3. AI Analysis Engine',
+                desc: 'The core innovation. Machine learning models analyze the structured data to find patterns invisible to static rules.',
+                items: [
+                    'Anomaly Detection (Unusual Spikes/Patterns)',
+                    'Traffic Classification (Normal vs. Malicious)',
+                    'Threat Profiling (DDoS, Malware Communication)',
+                    'Pre-trained models included out-of-the-box'
+                ]
+            },
+            'action': {
+                title: '4. Response & Visualization',
+                desc: 'Closing the loop. The system takes automated actions based on AI findings and presents data to the user.',
+                items: [
+                    'Automated IP Blocking / Connection Dropping',
+                    'Real-time Web UI / CLI Dashboard',
+                    'Topology Mapping & Anomaly Heatmaps',
+                    'Alerting System (Logs, Notifications)'
+                ]
+            }
+        };
+
+        function updateArchDetails(key) {
+            const data = archData[key];
+            const panel = document.getElementById('arch-detail-panel');
+            
+            // Simple fade effect
+            panel.classList.remove('fade-in');
+            void panel.offsetWidth; // trigger reflow
+            panel.classList.add('fade-in');
+
+            document.getElementById('detail-title').innerText = data.title;
+            document.getElementById('detail-desc').innerText = data.desc;
+            
+            const list = document.getElementById('detail-list');
+            list.innerHTML = '';
+            data.items.forEach(item => {
+                const li = document.createElement('li');
+                li.className = 'flex items-start text-sm text-slate-700';
+                li.innerHTML = `<span class="mr-2 text-blue-500 font-bold">•</span> ${item}`;
+                list.appendChild(li);
+            });
+        }
+
+        // --- 2. Chart.js & Simulation Logic ---
+        
+        // --- Traffic Chart (Line) ---
+        const ctxTraffic = document.getElementById('trafficChart').getContext('2d');
+        const initialData = Array(20).fill(10); // Start with baseline low traffic
+        const labels = Array(20).fill('');
+
+        const trafficChart = new Chart(ctxTraffic, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Packets / Sec',
+                    data: initialData,
+                    borderColor: '#3b82f6', // blue-500
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0
+                }, {
+                    label: 'Anomaly Threshold',
+                    data: Array(20).fill(80),
+                    borderColor: '#ef4444', // red-500
+                    borderWidth: 1,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: { duration: 0 }, // Performance optimization for real-time
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 120,
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: true }
+                }
+            }
+        });
+
+        // --- Threat Chart (Doughnut) ---
+        const ctxThreat = document.getElementById('threatChart').getContext('2d');
+        const threatChart = new Chart(ctxThreat, {
+            type: 'doughnut',
+            data: {
+                labels: ['Normal', 'Suspicious', 'Malicious'],
+                datasets: [{
+                    data: [95, 3, 2],
+                    backgroundColor: [
+                        '#e2e8f0', // slate-200 (Normal)
+                        '#f59e0b', // amber-500 (Suspicious)
+                        '#ef4444'  // red-500 (Malicious)
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 10, padding: 15 } }
+                }
+            }
+        });
+
+        // --- Simulation State ---
+        let isAttackActive = false;
+        let packetValue = 10;
+        
+        function addLog(message, type = 'INFO') {
+            const logPanel = document.getElementById('console-log');
+            const div = document.createElement('div');
+            div.className = 'mb-1 font-mono text-xs';
+            
+            let colorClass = 'text-blue-400';
+            if (type === 'WARN') colorClass = 'text-yellow-400';
+            if (type === 'ALERT') colorClass = 'text-red-500 font-bold';
+            
+            const timestamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+            div.innerHTML = `<span class="text-slate-500">[${timestamp}]</span> <span class="${colorClass}">[${type}]</span> <span class="text-slate-300">${message}</span>`;
+            
+            logPanel.appendChild(div);
+            logPanel.scrollTop = logPanel.scrollHeight;
+        }
+
+        // --- Main Simulation Loop ---
+        setInterval(() => {
+            // Update Traffic Data
+            const data = trafficChart.data.datasets[0].data;
+            
+            if (isAttackActive) {
+                // Spike logic
+                packetValue = Math.min(110, packetValue + Math.random() * 20);
+                if (Math.random() > 0.7) addLog('Unusual traffic spike detected. Analyzing headers...', 'WARN');
+            } else {
+                // Return to normal
+                packetValue = Math.max(10, packetValue + (Math.random() * 10 - 5));
+                if (packetValue > 25) packetValue -= 2; // Decay
+            }
+
+            // Shift data
+            data.push(packetValue);
+            data.shift();
+            trafficChart.update();
+
+            // Check Threshold triggers
+            if (packetValue > 80 && isAttackActive) {
+                // Simulate AI finding
+                const attackTypes = ['DDoS Flood', 'SYN Scan', 'Malware Beacon'];
+                const type = attackTypes[Math.floor(Math.random() * attackTypes.length)];
+                
+                // Update Threat Chart logic (visual only)
+                const currentMalicious = threatChart.data.datasets[0].data[2];
+                if (currentMalicious < 30) {
+                    threatChart.data.datasets[0].data[0] -= 5;
+                    threatChart.data.datasets[0].data[2] += 5;
+                    threatChart.update();
+                }
+
+                document.getElementById('dominant-pattern').innerText = type + " Detected";
+                document.getElementById('dominant-pattern').classList.add('text-red-600');
+                
+                // Auto Response
+                if (Math.random() > 0.8) {
+                    const randomIP = `192.168.1.${Math.floor(Math.random()*255)}`;
+                    addLog(`AI Confidence 98%. Blocking IP ${randomIP}`, 'ALERT');
+                    addLog(`Action Taken: DROP Connection`, 'ALERT');
+                }
+            } else if (!isAttackActive) {
+                 // Reset threat chart slowly
+                 const currentNormal = threatChart.data.datasets[0].data[0];
+                 if (currentNormal < 95) {
+                    threatChart.data.datasets[0].data[0] += 1;
+                    threatChart.data.datasets[0].data[2] -= 1;
+                    threatChart.update();
+                 }
+                 document.getElementById('dominant-pattern').innerText = "Normal Traffic";
+                 document.getElementById('dominant-pattern').classList.remove('text-red-600');
+            }
+
+        }, 1000); // 1 second tick
+
+        // --- Button Handler ---
+        function simulateAttack() {
+            if (isAttackActive) return;
+            
+            isAttackActive = true;
+            addLog("--- INJECTING TRAFFIC ANOMALY ---", "WARN");
+            
+            // Visual feedback on button
+            const btn = document.querySelector('button[onclick="simulateAttack()"]');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<span>⚡</span> Attack Active...`;
+            btn.classList.add('bg-red-100', 'pulse-alert');
+
+            // Reset after 8 seconds
+            setTimeout(() => {
+                isAttackActive = false;
+                btn.innerHTML = originalText;
+                btn.classList.remove('bg-red-100', 'pulse-alert');
+                addLog("--- ANOMALY MITIGATED / ENDED ---", "INFO");
+            }, 8000);
+        }
+
+        // Initialize Architecture Details
+        updateArchDetails('capture');
+
+    </script>
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</body>
+</html>

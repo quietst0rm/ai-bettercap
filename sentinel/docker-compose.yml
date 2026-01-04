@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # The Sensor: Bettercap
+  sensor:
+    image: bettercap/bettercap:latest
+    container_name: sentinel_sensor
+    network_mode: "host" # Required for packet capture
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    volumes:
+      - ./caplets:/caplets
+    command: "-caplet /caplets/listener.cap -no-colors"
+
+  # The Brain: Python AI Engine & Dashboard
+  ai_engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.ai
+    container_name: sentinel_brain
+    network_mode: "host" # Needs to talk to Bettercap on localhost
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    restart: always
+    command: 'sh -c "PYTHONPATH=/app python -m src.main & streamlit run src/ui/app.py --server.port 8501"'

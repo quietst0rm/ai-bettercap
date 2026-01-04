@@ -1,0 +1,18 @@
+# Initialize REST API for the Python Engine
+set api.rest.port 8081
+set api.rest.username sentinel
+set api.rest.password sentinel_secret
+set api.rest.websocket true
+api.rest on
+
+# Configure Sniffer
+# We filter out port 8081 to prevent the sensor from inspecting its own API traffic (feedback loop)
+set net.sniff.verbose true
+set net.sniff.local true
+set net.sniff.filter not port 8081 and not port 8501
+net.sniff on
+
+# Optional: Enable ticker for CLI debugging
+set ticker.commands "net.sniff.stats; events.show 5"
+set ticker.period 5
+ticker on
